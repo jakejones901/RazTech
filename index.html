@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RazTech — Systems. Knowledge. Craft.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #0d0d0d;
+      --bg2:        #111111;
+      --bg3:        #161616;
+      --panel:      #1a1a1a;
+      --panel2:     #1f1f1f;
+      --border:     #252525;
+      --border2:    #2f2f2f;
+
+      /* Warm antique gold palette */
+      --gold:       #c9a84c;
+      --gold-hi:    #e2c078;
+      --gold-lo:    #a8853a;
+      --gold-dim:   rgba(201,168,76,0.15);
+      --gold-glow:  rgba(201,168,76,0.08);
+
+      --green:      #5a9a5a;
+      --text:       #e0dbd2;
+      --text2:      #8a8278;
+      --text3:      #3e3a36;
+
+      --mono:       'DM Mono', monospace;
+      --display:    'Cinzel', serif;
+      --serif:      'Cormorant Garamond', serif;
+      --body:       'DM Sans', sans-serif;
+
+      --ps-bg:      #012456;
+      --ps-bar:     #001b40;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── GOLD GRADIENT UTILITY ── */
+    .gold-text {
+      background: linear-gradient(135deg, var(--gold-lo) 0%, var(--gold-hi) 45%, var(--gold) 70%, var(--gold-lo) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── SUBTLE TOP GLOW ── */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 400px;
+      background: radial-gradient(ellipse, rgba(201,168,76,0.04) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3rem;
+      height: 62px;
+      background: rgba(13,13,13,0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* thin gold line under nav */
+    nav::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--gold-lo) 30%, var(--gold) 50%, var(--gold-lo) 70%, transparent 100%);
+      opacity: 0.4;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    /* RT Monogram Mark */
+    .rt-mark {
+      width: 38px; height: 38px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .rt-mark svg { width: 38px; height: 38px; }
+
+    .logo-wordmark {
+      font-family: var(--display);
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      line-height: 1;
+    }
+
+    .logo-sub {
+      font-family: var(--mono);
+      font-size: 0.48rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-top: 0.15rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2.2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--display);
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text2);
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+
+    .nav-links a:hover { color: var(--gold); }
+
+    .nav-cta {
+      color: var(--gold) !important;
+      border: 1px solid var(--gold-lo);
+      padding: 0.4rem 1.1rem;
+      transition: background 0.2s, color 0.2s !important;
+    }
+
+    .nav-cta:hover {
+      background: var(--gold-dim) !important;
+    }
+
+    /* ── STATUS BAR ── */
+    .status-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 26px;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 2.5rem;
+      gap: 2.5rem;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      color: var(--text3);
+      letter-spacing: 0.08em;
+    }
+
+    .status-item { display: flex; align-items: center; gap: 0.45rem; }
+    .status-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2.5s infinite;
+    }
+    .status-dot.gold { background: var(--gold); }
+
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 460px;
+      padding-top: 62px;
+      position: relative;
+    }
+
+    /* decorative vertical gold rule */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 62px; bottom: 0;
+      left: 4rem;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent 0%, var(--gold-lo) 25%, var(--gold-lo) 75%, transparent 100%);
+      opacity: 0.12;
+      pointer-events: none;
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5rem 3rem 5rem 6rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--display);
+      font-size: 0.6rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      opacity: 0.8;
+    }
+
+    .hero-eyebrow::before,
+    .hero-eyebrow::after {
+      content: '';
+      display: block;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-lo));
+      width: 40px;
+    }
+
+    .hero-eyebrow::after {
+      background: linear-gradient(90deg, var(--gold-lo), transparent);
+    }
+
+    .hero-title {
+      font-family: var(--display);
+      font-size: clamp(4rem, 8.5vw, 8rem);
+      line-height: 0.88;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+
+    .hero-title-sub {
+      font-family: var(--serif);
+      font-size: clamp(1.2rem, 2.5vw, 2rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text2);
+      letter-spacing: 0.15em;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-divider {
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(90deg, var(--gold-lo), transparent);
+      margin-bottom: 2rem;
+    }
+
+    .hero-sub {
+      font-size: 0.95rem;
+      color: var(--text2);
+      max-width: 440px;
+      margin-bottom: 3rem;
+      line-height: 1.9;
+      font-weight: 300;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: linear-gradient(135deg, var(--gold-lo), var(--gold), var(--gold-lo));
+      color: #0d0d0d;
+      font-family: var(--display);
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.9rem 2rem;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--text2);
+      font-family: var(--display);
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.9rem 2rem;
+      border: 1px solid var(--border2);
+      transition: border-color 0.25s, color 0.25s;
+    }
+
+    .btn-ghost:hover { border-color: var(--gold-lo); color: var(--gold); }
+
+    /* ── HERO RIGHT ── */
+    .hero-right {
+      border-left: 1px solid var(--border);
+      background: var(--bg2);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 3rem 2.2rem;
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      gap: 1.4rem;
+    }
+
+    /* gold glow bottom corner */
+    .hero-right::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; right: -80px;
+      width: 280px; height: 280px;
+      background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    /* ── POWERSHELL WINDOW ── */
+    .ps-window {
+      border-radius: 3px;
+      overflow: hidden;
+      border: 1px solid #003380;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .ps-titlebar {
+      background: var(--ps-bar);
+      padding: 0.5rem 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      border-bottom: 1px solid #002266;
+    }
+
+    .ps-icon {
+      width: 15px; height: 15px;
+      background: #1e6dbf;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.5rem;
+      font-weight: bold;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      flex-shrink: 0;
+    }
+
+    .ps-title-text {
+      font-size: 0.62rem;
+      color: #8ab4e8;
+      letter-spacing: 0.04em;
+      flex: 1;
+    }
+
+    .ps-winbtns { display: flex; gap: 0.3rem; }
+
+    .ps-wb {
+      width: 20px; height: 13px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.5rem;
+      color: #8ab4e8;
+    }
+
+    .ps-body {
+      background: var(--ps-bg);
+      padding: 1rem 1.1rem 1.3rem;
+      line-height: 1.95;
+      color: #cccccc;
+    }
+
+    .ps-prompt { color: #ffff00; }
+    .ps-cmd    { color: #ffffff; }
+    .ps-param  { color: #00bfff; }
+    .ps-string { color: #ce9178; }
+    .ps-out    { color: #c0c0c0; }
+    .ps-gold   { color: var(--gold-hi); }
+    .ps-green  { color: #4ec94e; }
+    .ps-dim    { color: #3a5570; }
+    .ps-cursor {
+      display: inline-block;
+      width: 7px; height: 13px;
+      background: #cccccc;
+      animation: blink 1.1s infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+
+    /* ── STAT TILES ── */
+    .stat-tiles {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+    }
+
+    .stat-tile {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 0.85rem 1rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s;
+    }
+
+    .stat-tile:hover { border-color: var(--gold-lo); }
+
+    .stat-tile::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .stat-tile:hover::before { opacity: 0.5; }
+
+    .stat-label {
+      font-family: var(--display);
+      font-size: 0.5rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-value {
+      font-family: var(--display);
+      font-size: 1.5rem;
+      letter-spacing: 0.06em;
+      line-height: 1;
+    }
+
+    .stat-sub {
+      font-size: 0.6rem;
+      color: var(--text3);
+      margin-top: 0.25rem;
+      font-family: var(--mono);
+    }
+
+    /* ── ABOUT ── */
+    #about {
+      position: relative;
+      z-index: 1;
+      padding: 8rem 6rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-label {
+      font-family: var(--display);
+      font-size: 0.58rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.6rem;
+      opacity: 0.7;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--gold-lo), transparent);
+      max-width: 160px;
+      opacity: 0.3;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      margin-top: 3.5rem;
+    }
+
+    .about-headline {
+      font-family: var(--display);
+      font-size: clamp(2.2rem, 3.5vw, 3.2rem);
+      line-height: 1.05;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+      margin-bottom: 2rem;
+    }
+
+    .about-body {
+      color: var(--text2);
+      font-size: 0.92rem;
+      line-height: 1.95;
+      font-weight: 300;
+    }
+
+    .about-body p + p { margin-top: 1.2rem; }
+
+    /* ── PILLARS ── */
+    .pillars {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .pillar {
+      background: var(--panel);
+      padding: 1.4rem 1.6rem;
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 1.1rem;
+      align-items: start;
+      transition: background 0.2s;
+      cursor: default;
+      position: relative;
+    }
+
+    .pillar::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--gold-lo), var(--gold));
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .pillar:hover { background: var(--panel2); }
+    .pillar:hover::before { opacity: 1; }
+
+    .pillar-num {
+      font-family: var(--display);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      opacity: 0.5;
+      padding-top: 0.15rem;
+    }
+
+    .pillar-name {
+      font-family: var(--display);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold-hi);
+      margin-bottom: 0.3rem;
+      opacity: 0.9;
+    }
+
+    .pillar-desc {
+      font-size: 0.82rem;
+      color: var(--text2);
+      line-height: 1.7;
+    }
+
+    /* ── COMING SOON ── */
+    .coming-soon {
+      position: relative;
+      z-index: 1;
+      padding: 6rem;
+      border-top: 1px solid var(--border);
+      background: var(--bg2);
+    }
+
+    .cs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+
+    .cs-card {
+      background: var(--panel);
+      padding: 2.2rem 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.2s;
+    }
+
+    .cs-card:hover { background: var(--panel2); }
+
+    /* top gold line on hover */
+    .cs-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0;
+      transition: opacity 0.35s;
+    }
+
+    .cs-card:hover::before { opacity: 0.6; }
+
+    .cs-badge {
+      display: inline-block;
+      font-family: var(--display);
+      font-size: 0.5rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(201,168,76,0.25);
+      padding: 0.2rem 0.65rem;
+      margin-bottom: 1.2rem;
+      opacity: 0.8;
+    }
+
+    .cs-title {
+      font-family: var(--display);
+      font-size: 1.45rem;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.8rem;
+      font-weight: 600;
+    }
+
+    .cs-desc {
+      font-size: 0.83rem;
+      color: var(--text2);
+      line-height: 1.8;
+      font-weight: 300;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 2.5rem 6rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-brand {
+      font-family: var(--display);
+      font-size: 1.1rem;
+      letter-spacing: 0.2em;
+      color: var(--text3);
+    }
+
+    .footer-note {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      color: var(--text3);
+      letter-spacing: 0.1em;
+    }
+
+    /* ── FADE IN ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeUp 0.7s ease forwards;
+    }
+
+    @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+
+    .fade-in:nth-child(1) { animation-delay: 0.05s; }
+    .fade-in:nth-child(2) { animation-delay: 0.2s;  }
+    .fade-in:nth-child(3) { animation-delay: 0.35s; }
+    .fade-in:nth-child(4) { animation-delay: 0.5s;  }
+    .fade-in:nth-child(5) { animation-delay: 0.65s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 980px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero::before { display: none; }
+      .hero-left { padding: 4rem 2rem; }
+      .hero-right { border-left: none; border-top: 1px solid var(--border); padding: 2rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .cs-grid { grid-template-columns: 1fr; }
+      #about, .coming-soon, footer { padding: 4rem 2rem; }
+      nav { padding: 0 1.5rem; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <!-- RT Monogram SVG -->
+      <div class="rt-mark">
+        <svg viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="1" width="36" height="36" stroke="url(#goldBorder)" stroke-width="0.75"/>
+          <!-- R -->
+          <text x="4" y="27" font-family="Cinzel, serif" font-size="22" font-weight="700" fill="url(#goldGrad)">R</text>
+          <!-- T overlapping, offset right -->
+          <text x="16" y="27" font-family="Cinzel, serif" font-size="22" font-weight="700" fill="url(#goldGrad2)" opacity="0.85">T</text>
+          <!-- thin bottom rule -->
+          <line x1="4" y1="31" x2="34" y2="31" stroke="url(#goldLine)" stroke-width="0.6" opacity="0.5"/>
+          <defs>
+            <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"   stop-color="#a8853a"/>
+              <stop offset="45%"  stop-color="#e2c078"/>
+              <stop offset="100%" stop-color="#a8853a"/>
+            </linearGradient>
+            <linearGradient id="goldGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"   stop-color="#c9a84c"/>
+              <stop offset="50%"  stop-color="#e2c078"/>
+              <stop offset="100%" stop-color="#a8853a"/>
+            </linearGradient>
+            <linearGradient id="goldBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"   stop-color="#a8853a" stop-opacity="0.3"/>
+              <stop offset="50%"  stop-color="#c9a84c" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#a8853a" stop-opacity="0.3"/>
+            </linearGradient>
+            <linearGradient id="goldLine" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%"   stop-color="transparent"/>
+              <stop offset="50%"  stop-color="#c9a84c"/>
+              <stop offset="100%" stop-color="transparent"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div>
+        <div class="logo-wordmark gold-text">RAZTECH</div>
+        <div class="logo-sub">Systems · Knowledge · Craft</div>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#coming">Training</a></li>
+      <li><a href="#coming">Videos</a></li>
+      <li><a href="#coming">Blog</a></li>
+      <li><a href="#contact" class="nav-cta">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow fade-in">Systems Administration</div>
+
+      <h1 class="hero-title fade-in">
+        <span class="gold-text">RAZ</span><br>
+        <span class="gold-text">TECH</span>
+      </h1>
+
+      <div class="hero-title-sub fade-in">Systems. Knowledge. Craft.</div>
+
+      <div class="hero-divider fade-in"></div>
+
+      <p class="hero-sub fade-in">
+        Real-world documentation, training guides, and field notes from the trenches of enterprise infrastructure. Built for sysadmins who learn by doing.
+      </p>
+
+      <div class="hero-actions fade-in">
+        <a href="#coming" class="btn-primary">Explore Training</a>
+        <a href="#about" class="btn-ghost">About the Project</a>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <!-- PowerShell Window -->
+      <div class="ps-window">
+        <div class="ps-titlebar">
+          <div class="ps-icon">PS</div>
+          <span class="ps-title-text">Windows PowerShell</span>
+          <div class="ps-winbtns">
+            <div class="ps-wb">─</div>
+            <div class="ps-wb">□</div>
+            <div class="ps-wb">✕</div>
+          </div>
+        </div>
+        <div class="ps-body">
+          <div><span class="ps-prompt">PS C:\Users\RazTech&gt;</span> <span class="ps-cmd">$env:USERNAME</span></div>
+          <div class="ps-out ps-gold">RazTech</div>
+
+          <div><span class="ps-prompt">PS C:\Users\RazTech&gt;</span> <span class="ps-cmd">Get-Uptime</span></div>
+          <div class="ps-out"><span class="ps-dim">Days : </span><span class="ps-green">847</span> <span class="ps-dim">Hours : </span><span class="ps-green">14</span> <span class="ps-dim">Min : </span><span class="ps-green">23</span></div>
+
+          <div><span class="ps-prompt">PS C:\Users\RazTech&gt;</span> <span class="ps-cmd">Get-Content</span> <span class="ps-string">".\mission.txt"</span></div>
+          <div class="ps-out ps-gold">Document everything.</div>
+          <div class="ps-out ps-gold">Share what you know.</div>
+          <div class="ps-out ps-gold">Build better systems.</div>
+
+          <div><span class="ps-prompt">PS C:\Users\RazTech&gt;</span> <span class="ps-cursor"></span></div>
+        </div>
+      </div>
+
+      <!-- Stat Tiles -->
+      <div class="stat-tiles">
+        <div class="stat-tile">
+          <div class="stat-label">Status</div>
+          <div class="stat-value" style="font-family:var(--mono); font-size:0.85rem; color:#6abf6a;">● ONLINE</div>
+          <div class="stat-sub">All systems operational</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-label">Stack</div>
+          <div class="stat-value" style="font-size:0.9rem; font-family:var(--mono); color:var(--text);">Homelab</div>
+          <div class="stat-sub">Coolify · GitHub</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-label">Domain</div>
+          <div class="stat-value gold-text" style="font-size:0.75rem; font-family:var(--mono);">raztech.online</div>
+          <div class="stat-sub">Active · Registered</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-label">Content</div>
+          <div class="stat-value gold-text">∞</div>
+          <div class="stat-sub">Docs incoming</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-label">I &nbsp;·&nbsp; About</div>
+    <div class="about-grid">
+      <div>
+        <h2 class="about-headline">
+          Built by a<br>
+          <span class="gold-text">sysadmin</span><br>
+          for the field.
+        </h2>
+        <div class="about-body">
+          <p>RazTech is a knowledge platform rooted in real-world systems administration. No fluff. No marketing copy. Just practical documentation, honest walkthroughs, and the kind of content you actually need when something breaks at 2am.</p>
+          <p>From Active Directory to automation scripts, from server deployments to the daily grind of keeping infrastructure alive — this is where that knowledge lives.</p>
+          <p>Written from experience, tested in production, and built to be genuinely useful to anyone who administers systems for a living.</p>
+        </div>
+      </div>
+      <div class="pillars">
+        <div class="pillar">
+          <div class="pillar-num">01</div>
+          <div>
+            <div class="pillar-name">Training Docs</div>
+            <div class="pillar-desc">Step-by-step guides on real admin tasks — written the way you'd actually explain it to a colleague.</div>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-num">02</div>
+          <div>
+            <div class="pillar-name">Video Guides</div>
+            <div class="pillar-desc">Follow-along walkthroughs for setup, config, and troubleshooting. Watch it, then do it.</div>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-num">03</div>
+          <div>
+            <div class="pillar-name">Life in the Trenches</div>
+            <div class="pillar-desc">The unfiltered day-to-day of being a sysadmin. Tips, stories, and hard-won lessons.</div>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-num">04</div>
+          <div>
+            <div class="pillar-name">Homelab &amp; Automation</div>
+            <div class="pillar-desc">Self-hosted setups, Coolify deployments, PowerShell scripts, and infrastructure experiments.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMING SOON -->
+  <section id="coming" class="coming-soon">
+    <div class="section-label">II &nbsp;·&nbsp; Coming Soon</div>
+    <div class="cs-grid">
+      <div class="cs-card">
+        <div class="cs-badge">In Progress</div>
+        <div class="cs-title gold-text">Training Library</div>
+        <div class="cs-desc">Structured documentation covering AD, DNS, DHCP, Group Policy, PowerShell, and everything in between.</div>
+      </div>
+      <div class="cs-card">
+        <div class="cs-badge">Planned</div>
+        <div class="cs-title gold-text">Video Series</div>
+        <div class="cs-desc">Screen-recorded walkthroughs with narration. Real tasks, real environments, no post-production fluff.</div>
+      </div>
+      <div class="cs-card">
+        <div class="cs-badge">Planned</div>
+        <div class="cs-title gold-text">Sysadmin Blog</div>
+        <div class="cs-desc">Field notes, incident retrospectives, career perspective, and the posts you bookmark and re-read later.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="contact">
+    <div class="footer-brand gold-text">RAZTECH.ONLINE</div>
+    <div class="footer-note">self-hosted · coolify · homelab &nbsp;·&nbsp; &copy; 2025 RazTech</div>
+  </footer>
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <div class="status-item"><div class="status-dot"></div>raztech.online — online</div>
+    <div class="status-item"><div class="status-dot gold"></div>content: building</div>
+    <div class="status-item">stack: coolify · github · homelab</div>
+    <div style="margin-left:auto">v0.1.0 — initial deploy</div>
+  </div>
+
+</body>
+</html>
