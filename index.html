@@ -682,6 +682,31 @@
       letter-spacing: 0.1em;
     }
 
+    /* SOCIAL LINKS */
+.social-links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.social-links a {
+  text-decoration: none;
+  color: var(--gold);
+  border: 1px solid var(--gold-lo);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  transition: all 0.2s ease;
+}
+
+.social-links a:hover {
+  background: var(--gold);
+  color: var(--bg);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 980px) {
     /* ── FADE IN ── */
     .fade-in {
       opacity: 0;
@@ -914,10 +939,32 @@
   </section>
 
   <!-- FOOTER -->
-  <footer id="contact">
+ <footer id="contact">
+  <div>
     <div class="footer-brand gold-text">RAZTECH.ONLINE</div>
-    <div class="footer-note">self-hosted · coolify · homelab &nbsp;·&nbsp; &copy; 2025 RazTech</div>
-  </footer>
+    <div class="footer-note">
+      self-hosted · coolify · homelab &nbsp;&nbsp; &copy; 2025 RazTech
+    </div>
+  </div>
+
+  <div class="social-links">
+    <a href="https://www.twitch.tv/raztechactual" target="_blank">
+      🎥 Twitch
+    </a>
+
+    <a href="https://www.tiktok.com/@raztechonline" target="_blank">
+      📱 TikTok
+    </a>
+
+    <a href="https://www.youtube.com/@RazTechOnline" target="_blank">
+      ▶️ YouTube
+    </a>
+
+    <a href="https://github.com/jakejones901/RazTech" target="_blank">
+      💻 GitHub
+    </a>
+  </div>
+</footer>
 
   <!-- STATUS BAR -->
   <div class="status-bar">
