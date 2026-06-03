@@ -1,37 +1,982 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Training Library � RazTech</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RazTech — Training</title>
+  <meta name="description" content="Learn IT the real way. Beginner-friendly guides, walkthroughs, and video training covering PCs, Windows, networking, home labs, and cybersecurity.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #0d0d0d;
+      --bg2:        #111111;
+      --bg3:        #161616;
+      --panel:      #1a1a1a;
+      --panel2:     #1f1f1f;
+      --border:     #252525;
+      --border2:    #2f2f2f;
+      --gold:       #c9a84c;
+      --gold-hi:    #e2c078;
+      --gold-lo:    #a8853a;
+      --gold-dim:   rgba(201,168,76,0.15);
+      --gold-glow:  rgba(201,168,76,0.08);
+      --green:      #5a9a5a;
+      --text:       #e0dbd2;
+      --text2:      #8a8278;
+      --text3:      #3e3a36;
+      --mono:       'DM Mono', monospace;
+      --display:    'Cinzel', serif;
+      --serif:      'Cormorant Garamond', serif;
+      --body:       'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .gold-text {
+      background: linear-gradient(135deg, var(--gold-lo) 0%, var(--gold-hi) 45%, var(--gold) 70%, var(--gold-lo) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 400px;
+      background: radial-gradient(ellipse, rgba(201,168,76,0.04) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV (identical to homepage) ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3rem;
+      height: 62px;
+      background: rgba(13,13,13,0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--gold-lo) 30%, var(--gold) 50%, var(--gold-lo) 70%, transparent 100%);
+      opacity: 0.4;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .rt-mark { width: 38px; height: 38px; position: relative; flex-shrink: 0; }
+    .rt-mark svg { width: 38px; height: 38px; }
+
+    .logo-wordmark {
+      font-family: var(--display);
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      line-height: 1;
+    }
+
+    .logo-sub {
+      font-family: var(--mono);
+      font-size: 0.48rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-top: 0.15rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2.2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--display);
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text2);
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--gold); }
+
+    .nav-cta {
+      color: var(--gold) !important;
+      border: 1px solid var(--gold-lo);
+      padding: 0.4rem 1.1rem;
+      transition: background 0.2s, color 0.2s !important;
+    }
+
+    .nav-cta:hover { background: var(--gold-dim) !important; }
+
+    /* ── STATUS BAR ── */
+    .status-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 26px;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 2.5rem;
+      gap: 2.5rem;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      color: var(--text3);
+      letter-spacing: 0.08em;
+    }
+
+    .status-item { display: flex; align-items: center; gap: 0.45rem; }
+    .status-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2.5s infinite;
+    }
+    .status-dot.gold { background: var(--gold); }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
+
+    /* ── PAGE HERO ── */
+    .page-hero {
+      padding-top: 62px;
+      padding-bottom: 0;
+      min-height: 340px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      top: 62px; bottom: 0;
+      left: 4rem;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent 0%, var(--gold-lo) 40%, transparent 100%);
+      opacity: 0.15;
+    }
+
+    .page-hero-inner {
+      padding: 4rem 6rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .page-eyebrow {
+      font-family: var(--display);
+      font-size: 0.6rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.2rem;
+      opacity: 0.8;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .page-eyebrow::before {
+      content: '';
+      display: block;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-lo));
+      width: 40px;
+    }
+
+    .page-title {
+      font-family: var(--display);
+      font-size: clamp(2.8rem, 5vw, 5rem);
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      line-height: 0.95;
+      margin-bottom: 1.2rem;
+    }
+
+    .page-sub {
+      font-size: 0.95rem;
+      color: var(--text2);
+      max-width: 560px;
+      line-height: 1.9;
+      font-weight: 300;
+      margin-top: 1.2rem;
+    }
+
+    /* ── SECTION UTILITY ── */
+    .section-label {
+      font-family: var(--display);
+      font-size: 0.58rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.6rem;
+      opacity: 0.7;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--gold-lo), transparent);
+      max-width: 160px;
+      opacity: 0.3;
+    }
+
+    /* ── HOW TO USE ── */
+    .how-to-use {
+      padding: 4rem 6rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+    }
+
+    .htu-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-top: 2rem;
+    }
+
+    .htu-step {
+      background: var(--panel);
+      padding: 1.8rem 1.6rem;
+      position: relative;
+      transition: background 0.2s;
+    }
+
+    .htu-step:hover { background: var(--panel2); }
+
+    .htu-step::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .htu-step:hover::before { opacity: 0.5; }
+
+    .htu-num {
+      font-family: var(--display);
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      line-height: 1;
+      margin-bottom: 0.6rem;
+    }
+
+    .htu-title {
+      font-family: var(--display);
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .htu-desc {
+      font-size: 0.83rem;
+      color: var(--text2);
+      line-height: 1.75;
+    }
+
+    /* ── LEARNING TRACKS ── */
+    .tracks-section {
+      padding: 5rem 6rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tracks-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-top: 2.5rem;
+    }
+
+    .track-card {
+      background: var(--panel);
+      padding: 2rem 1.8rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      cursor: pointer;
+    }
+
+    .track-card:hover { background: var(--panel2); }
+
+    .track-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--gold-lo), var(--gold));
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .track-card:hover::before { opacity: 1; }
+
+    .track-icon {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .track-badge {
+      display: inline-block;
+      font-family: var(--display);
+      font-size: 0.48rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(201,168,76,0.25);
+      padding: 0.18rem 0.55rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .track-title {
+      font-family: var(--display);
+      font-size: 1.1rem;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+    }
+
+    .track-desc {
+      font-size: 0.82rem;
+      color: var(--text2);
+      line-height: 1.75;
+      margin-bottom: 1.2rem;
+    }
+
+    .track-topics {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .track-topics li {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--text3);
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .track-topics li::before {
+      content: '›';
+      color: var(--gold-lo);
+      font-size: 0.75rem;
+    }
+
+    .track-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--display);
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-top: 1.4rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .track-card:hover .track-cta { opacity: 1; }
+
+    /* ── VIDEO SECTION ── */
+    .videos-section {
+      padding: 5rem 6rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+    }
+
+    .videos-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .yt-subscribe-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: linear-gradient(135deg, var(--gold-lo), var(--gold), var(--gold-lo));
+      color: #0d0d0d;
+      font-family: var(--display);
+      font-size: 0.58rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.75rem 1.6rem;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .yt-subscribe-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    .videos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .video-card {
+      background: var(--panel);
+      overflow: hidden;
+      position: relative;
+      transition: background 0.2s;
+    }
+
+    .video-card:hover { background: var(--panel2); }
+
+    .video-embed {
+      width: 100%;
+      aspect-ratio: 16/9;
+      display: block;
+      border: none;
+    }
+
+    .video-meta {
+      padding: 1.2rem 1.4rem;
+    }
+
+    .video-track-tag {
+      font-family: var(--display);
+      font-size: 0.48rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.7;
+      margin-bottom: 0.4rem;
+    }
+
+    .video-title {
+      font-family: var(--display);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .video-placeholder {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .video-placeholder-icon {
+      font-size: 2rem;
+      opacity: 0.2;
+    }
+
+    .video-placeholder-text {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      color: var(--text3);
+      letter-spacing: 0.1em;
+    }
+
+    /* ── CTA SECTION ── */
+    .cta-section {
+      padding: 5rem 6rem;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .cta-panel {
+      background: var(--panel);
+      padding: 3rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.2s;
+    }
+
+    .cta-panel:hover { background: var(--panel2); }
+
+    .cta-panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .cta-panel:hover::before { opacity: 0.5; }
+
+    .cta-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .cta-title {
+      font-family: var(--display);
+      font-size: 1.3rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.8rem;
+      font-weight: 600;
+    }
+
+    .cta-desc {
+      font-size: 0.85rem;
+      color: var(--text2);
+      line-height: 1.8;
+      margin-bottom: 1.6rem;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: linear-gradient(135deg, var(--gold-lo), var(--gold), var(--gold-lo));
+      color: #0d0d0d;
+      font-family: var(--display);
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.9rem 2rem;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--text2);
+      font-family: var(--display);
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.9rem 2rem;
+      border: 1px solid var(--border2);
+      transition: border-color 0.25s, color 0.25s;
+    }
+
+    .btn-ghost:hover { border-color: var(--gold-lo); color: var(--gold); }
+
+    /* ── FOOTER (identical to homepage) ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 2.5rem 6rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-brand {
+      font-family: var(--display);
+      font-size: 1.1rem;
+      letter-spacing: 0.2em;
+      color: var(--text3);
+    }
+
+    .footer-note {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      color: var(--text3);
+      letter-spacing: 0.1em;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .social-links a {
+      text-decoration: none;
+      color: var(--gold);
+      border: 1px solid var(--gold-lo);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      transition: all 0.2s ease;
+    }
+
+    .social-links a:hover {
+      background: var(--gold);
+      color: var(--bg);
+    }
+
+    /* ── FADE IN ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeUp 0.7s ease forwards;
+    }
+
+    @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+    .fade-in:nth-child(1) { animation-delay: 0.05s; }
+    .fade-in:nth-child(2) { animation-delay: 0.2s; }
+    .fade-in:nth-child(3) { animation-delay: 0.35s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 980px) {
+      nav { padding: 0 1.5rem; }
+      .nav-links { display: none; }
+      .page-hero-inner { padding: 3rem 2rem; }
+      .how-to-use,
+      .tracks-section,
+      .videos-section { padding: 3rem 2rem; }
+      .htu-inner { grid-template-columns: 1fr; }
+      .tracks-grid { grid-template-columns: 1fr; }
+      .videos-grid { grid-template-columns: 1fr; }
+      .cta-section { grid-template-columns: 1fr; padding: 0; }
+      .cta-panel { padding: 2rem; }
+      footer { padding: 2rem; flex-direction: column; gap: 1.5rem; align-items: flex-start; }
+    }
+  </style>
 </head>
-<body style="background:#0d0d0d; color:#e0dbd2; font-family:sans-serif; padding:40px; max-width:900px; margin:auto;">
+<body>
 
-<h1>Training Library</h1>
-<p>Real-world sysadmin documentation. Built from experience.</p>
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <div class="rt-mark">
+        <svg viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="1" width="36" height="36" stroke="url(#goldBorder)" stroke-width="0.75"/>
+          <text x="4" y="27" font-family="Cinzel, serif" font-size="22" font-weight="700" fill="url(#goldGrad)">R</text>
+          <text x="16" y="27" font-family="Cinzel, serif" font-size="22" font-weight="700" fill="url(#goldGrad2)" opacity="0.85">T</text>
+          <line x1="4" y1="31" x2="34" y2="31" stroke="url(#goldLine)" stroke-width="0.6" opacity="0.5"/>
+          <defs>
+            <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#a8853a"/><stop offset="45%" stop-color="#e2c078"/><stop offset="100%" stop-color="#a8853a"/>
+            </linearGradient>
+            <linearGradient id="goldGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#c9a84c"/><stop offset="50%" stop-color="#e2c078"/><stop offset="100%" stop-color="#a8853a"/>
+            </linearGradient>
+            <linearGradient id="goldBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#a8853a" stop-opacity="0.3"/><stop offset="50%" stop-color="#c9a84c" stop-opacity="0.6"/><stop offset="100%" stop-color="#a8853a" stop-opacity="0.3"/>
+            </linearGradient>
+            <linearGradient id="goldLine" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="transparent"/><stop offset="50%" stop-color="#c9a84c"/><stop offset="100%" stop-color="transparent"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div>
+        <div class="logo-wordmark gold-text">RAZTECH</div>
+        <div class="logo-sub">Systems · Knowledge · Craft</div>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="index.html#coming">Videos</a></li>
+      <li><a href="index.html#coming">Blog</a></li>
+      <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+    </ul>
+  </nav>
 
-<hr>
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <div class="page-hero-inner">
+      <div class="page-eyebrow fade-in">Learn IT</div>
+      <h1 class="page-title fade-in">
+        <span class="gold-text">Training</span><br>
+        <span style="color: var(--text2); font-size: 0.55em; font-weight: 300; letter-spacing: 0.12em;">Operations Center</span>
+      </h1>
+      <p class="page-sub fade-in">
+        You don't need a degree to start. You need a direction. Pick a track, follow the steps, and build real skills — the same way I did, starting from a gaming PC.
+      </p>
+    </div>
+  </section>
 
-<h2>?? Core Infrastructure</h2>
-<ul>
-  <li><a href="how-to-join-domain.html">Join a Computer to a Domain</a></li>
-  <li>(Coming soon) Active Directory Basics</li>
-  <li>(Coming soon) Group Policy Fundamentals</li>
-</ul>
+  <!-- HOW TO USE THIS PAGE -->
+  <section class="how-to-use">
+    <div class="section-label">I  ·  How This Works</div>
+    <div class="htu-inner">
+      <div class="htu-step">
+        <div class="htu-num gold-text">01</div>
+        <div class="htu-title">Pick a Track</div>
+        <div class="htu-desc">Choose a topic that matches where you are right now. Never touched a PC? Start with hardware. Already comfortable? Jump to networking or home labs.</div>
+      </div>
+      <div class="htu-step">
+        <div class="htu-num gold-text">02</div>
+        <div class="htu-title">Watch + Read</div>
+        <div class="htu-desc">Each track has companion videos on YouTube and written guides here. Watch first to understand the concept, then follow the written steps to build it yourself.</div>
+      </div>
+      <div class="htu-step">
+        <div class="htu-num gold-text">03</div>
+        <div class="htu-title">Build & Level Up</div>
+        <div class="htu-desc">The goal isn't just to watch — it's to do. Get your hands on the hardware or software and complete the task. That's where the skill actually forms.</div>
+      </div>
+    </div>
+  </section>
 
-<h2>? PowerShell</h2>
-<ul>
-  <li>(Coming soon) Essential PowerShell Commands</li>
-</ul>
+  <!-- LEARNING TRACKS -->
+  <section class="tracks-section">
+    <div class="section-label">II  ·  Learning Tracks</div>
+    <div class="tracks-grid">
 
-<h2>?? Homelab</h2>
-<ul>
-  <li>(Coming soon) Setting up a Home Lab</li>
-</ul>
+      <div class="track-card">
+        <span class="track-icon">🖥️</span>
+        <div class="track-badge">Beginner · Start Here</div>
+        <div class="track-title gold-text">Build Your First PC</div>
+        <div class="track-desc">Every IT career starts with understanding the hardware. Learn what every component does, how to pick parts, and how to put it all together.</div>
+        <ul class="track-topics">
+          <li>What every component actually does</li>
+          <li>Choosing compatible parts</li>
+          <li>Physical assembly walkthrough</li>
+          <li>First boot & BIOS setup</li>
+          <li>Installing your OS from scratch</li>
+        </ul>
+        <span class="track-cta">Start Track →</span>
+      </div>
 
-<br><br>
+      <div class="track-card">
+        <span class="track-icon">🪟</span>
+        <div class="track-badge">Beginner · Intermediate</div>
+        <div class="track-title gold-text">Windows Setup & Maintenance</div>
+        <div class="track-desc">Most people use Windows every day but don't know how it works. Learn to set it up properly, keep it clean, and fix it when it breaks.</div>
+        <ul class="track-topics">
+          <li>Clean Windows installation</li>
+          <li>Driver management</li>
+          <li>Performance tuning & bloat removal</li>
+          <li>Troubleshooting common issues</li>
+          <li>Intro to PowerShell</li>
+        </ul>
+        <span class="track-cta">Start Track →</span>
+      </div>
 
-<a href="index.html">? Back to Home</a>
+      <div class="track-card">
+        <span class="track-icon">🌐</span>
+        <div class="track-badge">Intermediate</div>
+        <div class="track-title gold-text">Networking Basics</div>
+        <div class="track-desc">Networking is the language computers use to talk to each other. Understanding it makes you dangerous — in the best way.</div>
+        <ul class="track-topics">
+          <li>IP addresses, subnets, and DNS</li>
+          <li>How your home router actually works</li>
+          <li>Setting up a proper home network</li>
+          <li>VLANs and network segmentation</li>
+          <li>Troubleshooting connectivity</li>
+        </ul>
+        <span class="track-cta">Start Track →</span>
+      </div>
+
+      <div class="track-card">
+        <span class="track-icon">🖧</span>
+        <div class="track-badge">Intermediate · Advanced</div>
+        <div class="track-title gold-text">Home Lab & Servers</div>
+        <div class="track-desc">A home lab is where you go from following tutorials to actually building and breaking things yourself. This is where real sysadmins are made.</div>
+        <ul class="track-topics">
+          <li>Building a home lab on a budget</li>
+          <li>Virtualization with Proxmox / Hyper-V</li>
+          <li>Setting up Windows Server</li>
+          <li>Active Directory fundamentals</li>
+          <li>Self-hosting with Coolify</li>
+        </ul>
+        <span class="track-cta">Start Track →</span>
+      </div>
+
+      <div class="track-card">
+        <span class="track-icon">🔐</span>
+        <div class="track-badge">Intermediate</div>
+        <div class="track-title gold-text">Cybersecurity Fundamentals</div>
+        <div class="track-desc">You don't need to be a hacker to understand security. You need to understand how attackers think so you can defend against them.</div>
+        <ul class="track-topics">
+          <li>How attacks actually happen</li>
+          <li>Firewalls, VPNs, and network defense</li>
+          <li>Password hygiene and MFA</li>
+          <li>Intro to security monitoring</li>
+          <li>Building a secure home network</li>
+        </ul>
+        <span class="track-cta">Start Track →</span>
+      </div>
+
+      <div class="track-card">
+        <span class="track-icon">🤖</span>
+        <div class="track-badge">All Levels · Ongoing</div>
+        <div class="track-title gold-text">AI Tools & Automation</div>
+        <div class="track-desc">AI isn't replacing IT professionals — it's giving them superpowers. Learn to use it to automate the boring stuff and work faster.</div>
+        <ul class="track-topics">
+          <li>Using AI to write and debug scripts</li>
+          <li>Automating tasks with PowerShell</li>
+          <li>AI tools for sysadmins</li>
+          <li>Self-hosted AI experiments</li>
+          <li>Building automation workflows</li>
+        </ul>
+        <span class="track-cta">Start Track →</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- LATEST VIDEOS -->
+  <section class="videos-section">
+    <div class="videos-header">
+      <div>
+        <div class="section-label">III  ·  Latest Videos</div>
+        <p style="font-size: 0.82rem; color: var(--text2); margin-top: 0.5rem; font-weight: 300;">
+          Watch on this page or head to YouTube — your choice. New videos drop regularly.
+        </p>
+      </div>
+      <a href="https://www.youtube.com/@RazTechOnline" target="_blank" class="yt-subscribe-btn">
+        ▶️ Subscribe on YouTube
+      </a>
+    </div>
+
+    <div class="videos-grid">
+      <!--
+        INSTRUCTIONS:
+        Replace the src in each iframe with your actual YouTube video URLs.
+        Format: https://www.youtube.com/embed/VIDEO_ID
+        Example: https://www.youtube.com/embed/dQw4w9WgXcQ
+
+        Until you have videos, the placeholders below will show.
+        To add a real video, swap the <div class="video-placeholder"> block
+        with: <iframe class="video-embed" src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+                 title="Video Title" allowfullscreen></iframe>
+      -->
+
+      <div class="video-card">
+        <div class="video-placeholder">
+          <span class="video-placeholder-icon">▶</span>
+          <span class="video-placeholder-text">// video coming soon</span>
+        </div>
+        <div class="video-meta">
+          <div class="video-track-tag">Build Your First PC</div>
+          <div class="video-title">What Every PC Part Actually Does — Explained Simply</div>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <div class="video-placeholder">
+          <span class="video-placeholder-icon">▶</span>
+          <span class="video-placeholder-text">// video coming soon</span>
+        </div>
+        <div class="video-meta">
+          <div class="video-track-tag">Windows Setup</div>
+          <div class="video-title">How to Install Windows the Right Way (Clean Install Guide)</div>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <div class="video-placeholder">
+          <span class="video-placeholder-icon">▶</span>
+          <span class="video-placeholder-text">// video coming soon</span>
+        </div>
+        <div class="video-meta">
+          <div class="video-track-tag">Networking</div>
+          <div class="video-title">Your Home Network Explained — IP, DNS, and Why It Matters</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA PANELS -->
+  <section class="cta-section">
+    <div class="cta-panel">
+      <div class="cta-icon">📺</div>
+      <div class="cta-title gold-text">Watch on YouTube</div>
+      <div class="cta-desc">
+        Every video walkthrough lives on the RazTech YouTube channel. Subscribe so you don't miss new guides, builds, and deep dives as they drop.
+      </div>
+      <a href="https://www.youtube.com/@RazTechOnline" target="_blank" class="btn-primary">Open YouTube Channel</a>
+    </div>
+    <div class="cta-panel">
+      <div class="cta-icon">🎮</div>
+      <div class="cta-title gold-text">Watch Me Build Live</div>
+      <div class="cta-desc">
+        Catch live streams on Twitch — home lab experiments, troubleshooting sessions, gaming, and community Q&A. Ask questions in real time.
+      </div>
+      <a href="https://www.twitch.tv/raztechactual" target="_blank" class="btn-ghost">Join on Twitch</a>
+    </div>
+  </section>
+
+  <!-- FOOTER (identical to homepage) -->
+  <footer id="contact">
+    <div>
+      <div class="footer-brand gold-text">RAZTECH.ONLINE</div>
+      <div class="footer-note">self-hosted · coolify · homelab    © 2025 RazTech</div>
+    </div>
+    <div class="social-links">
+      <a href="https://www.twitch.tv/raztechactual" target="_blank">🎥 Twitch</a>
+      <a href="https://www.tiktok.com/@raztechonline" target="_blank">📱 TikTok</a>
+      <a href="https://www.youtube.com/@RazTechOnline" target="_blank">▶️ YouTube</a>
+    </div>
+  </footer>
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <div class="status-item"><div class="status-dot"></div>raztech.online — online</div>
+    <div class="status-item"><div class="status-dot gold"></div>training: building</div>
+    <div class="status-item">stack: coolify · github · homelab</div>
+    <div style="margin-left:auto">v0.1.0 — initial deploy</div>
+  </div>
 
 </body>
 </html>
