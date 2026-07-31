@@ -1,0 +1,123 @@
+# RazTech AI Content Pipeline — Ingestion Agent configuration
+# Paths work on both Windows and Linux; override via env or local.yaml.
+
+pipeline:
+  version: "1.0.0"
+  creator: "RazTech"
+  project: "AI Content Pipeline"
+  next_agent: "Clip Detection Agent"
+  priority: "normal"
+  id_prefix: "RAZ"
+
+watch:
+  directories:
+    - "/streams/recordings"
+    - "/obs/output"
+    - "/imports"
+  extensions:
+    - ".mp4"
+    - ".mkv"
+    - ".mov"
+    - ".avi"
+  ignore_patterns:
+    - ".*"           # hidden files
+    - "*.tmp"
+    - "*.temp"
+    - "*.part"
+    - "*.partial"
+    - "*.crdownload"
+    - "*.download"
+    - "*~"
+    - "*.bak"
+  poll_interval_seconds: 5
+  recursive: true
+
+validation:
+  # File size must be unchanged for this many seconds before processing
+  stability_seconds: 60
+  stability_check_interval_seconds: 5
+  min_duration_seconds: 120
+  require_video_stream: true
+  require_audio_stream: true
+  ffprobe_timeout_seconds: 60
+
+storage:
+  content_root: "/content"
+  failed_root: "/failed"
+  # Output layout: /content/YYYY/MM/DD/<video_id>/
+  video_filename: "video.mp4"
+  manifest_filename: "manifest.json"
+  metadata_filename: "metadata.json"
+  log_filename: "processing.log"
+  hash_filename: "hash.txt"
+  preview_filename: "preview.jpg"
+  failure_report_filename: "failure_report.json"
+
+content_prep:
+  generate_thumbnail: true
+  generate_waveform: true
+  generate_silence_map: true
+  generate_loudness: true
+  generate_scene_index: true
+  generate_timestamp_index: true
+  generate_chapter_suggestions: true
+  # Placeholders for downstream agents (no heavy analysis here)
+  placeholders:
+    - transcript
+    - motion_analysis
+    - face_detection
+    - ocr
+    - chat_overlay_detection
+  silence_threshold_db: -50
+  scene_threshold: 0.4
+  chapter_min_gap_seconds: 120
+  waveform_samples: 200
+  timestamp_interval_seconds: 30
+
+stream_detection:
+  known_games:
+    - "Valorant"
+    - "League of Legends"
+    - "Counter-Strike 2"
+    - "CS2"
+    - "Fortnite"
+    - "Apex Legends"
+    - "Minecraft"
+    - "Call of Duty"
+    - "Warzone"
+    - "Overwatch"
+    - "Dota 2"
+    - "GTA V"
+    - "Grand Theft Auto"
+    - "Elden Ring"
+    - "Rocket League"
+    - "World of Warcraft"
+    - "Destiny 2"
+    - "PUBG"
+    - "Rainbow Six"
+    - "Dead by Daylight"
+    - "Among Us"
+    - "Roblox"
+    - "Twitch"
+  streaming_software:
+    - "OBS"
+    - "OBS Studio"
+    - "Streamlabs"
+    - "XSplit"
+    - "Twitch Studio"
+  platforms:
+    - "Twitch"
+    - "YouTube"
+    - "Kick"
+    - "Facebook Gaming"
+    - "Trovo"
+
+logging:
+  level: "INFO"
+  format: "json"   # json | text
+  console: true
+  file: null       # optional global log file path
+
+processing:
+  max_concurrent: 2
+  notify_on_complete: true
