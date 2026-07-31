@@ -1,0 +1,21 @@
+# Copy to local.yaml (gitignored) for machine-specific overrides.
+# Example for local development on Linux or Windows.
+
+watch:
+  directories:
+    - "./data/streams/recordings"
+    - "./data/obs/output"
+    - "./data/imports"
+
+validation:
+  stability_seconds: 5
+  min_duration_seconds: 120
+
+storage:
+  content_root: "./data/content"
+  failed_root: "./data/failed"
+
+logging:
+  level: "DEBUG"
+  format: "text"
+  console: true

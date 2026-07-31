@@ -1,0 +1,26 @@
+services:
+  ingestion-agent:
+    build: .
+    container_name: raztech-ingestion-agent
+    restart: unless-stopped
+    environment:
+      INGESTION_LOG_LEVEL: INFO
+      INGESTION_CONTENT_ROOT: /content
+      INGESTION_FAILED_ROOT: /failed
+      # Optional: override stability wait for faster local testing
+      # INGESTION_STABILITY_SECONDS: "60"
+    volumes:
+      - ./config:/app/config:ro
+      - streams_recordings:/streams/recordings
+      - obs_output:/obs/output
+      - imports:/imports
+      - content:/content
+      - failed:/failed
+    command: ["watch"]
+
+volumes:
+  streams_recordings:
+  obs_output:
+  imports:
+  content:
+  failed:
